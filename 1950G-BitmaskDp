@@ -1,0 +1,91 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef int ll;
+#define inf             1e18
+#define endl '\n'
+const ll N = 18;
+ll dp[(1ll << N)][N];
+string g[N], w[N];
+ll n;
+ll mx = 0;
+ll pd[N][N];
+ll check(string s, string t) {
+  return (s == t);
+}
+void bitmask(ll mask, ll pv) {
+  ll cnt = __builtin_popcount(mask);
+  mx = max(mx, cnt);
+
+  ll &p = dp[mask][pv];
+  if (p != -1) {
+    return;
+  }
+  p = 0;
+  if (pv == 17) {
+    for (ll i = 0; i < n; i++) {
+      bitmask((mask | (1ll << i)), i);
+    }
+  }
+  else {
+
+    for (ll i = 0; i < n; i++) {
+      if (mask & (1ll << i)) {
+        continue;
+      }
+      else {
+        if (pd[i][pv]) {
+          bitmask((mask | (1ll << i)), i);
+        }
+      }
+    }
+  }
+}
+void sol()
+{
+
+  cin >> n;
+  for (ll i = 0; i < n; i++) {
+    for (ll j = 0; j < n; j++) {
+      pd[i][j] = 0;
+    }
+  }
+
+
+  for (ll i = 0; i < n; i++) {
+    cin >> g[i] >> w[i];
+  }
+  for (ll i = 0; i < n; i++) {
+    for (ll j = 0; j < n; j++) {
+      if (check(g[i], g[j]) || check(w[i], w[j])) {
+        pd[i][j] = 1;
+        pd[j][i] = 1;
+      }
+    }
+  }
+
+  mx = 0;
+  for (ll i = 0; i < (1ll << n); i++) {
+    for (ll j = 0; j < n; j++) {
+      dp[i][j] = -1;
+    }
+    dp[i][17] = -1;
+
+
+
+  }
+
+  bitmask(0, 17);
+  cout << n - mx << endl;
+}
+
+int32_t main()
+{
+  ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+  ll tc1 = 1;
+  cin >> tc1;
+  while (tc1--)
+  {
+    sol();
+  }
+  return 0;
+}
